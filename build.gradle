@@ -11,8 +11,8 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 version          = "1.0"
-group            = "com.SadFriends.sigma"
-archivesBaseName = "TNTTag"
+group            = "com.LastHit.Source"
+archivesBaseName = "AutoHit"
 
 minecraft {
     version  = "1.8.9-11.15.1.2318-1.8.9"
