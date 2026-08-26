@@ -114,7 +114,6 @@ public class AutoHit {
     private volatile double pingMultiplier = 1.0;
 
     private double calibrationOffsetMs = 50.0;
-    private double targetRegistrationMs = 0.001;
 
     private double timerSeconds = 0.0;
     private long timerSyncTimeNs = 0L;
@@ -443,18 +442,18 @@ public class AutoHit {
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == Phase.START) {
             if (!moduleEnabled) {
-                hud.update(0, 0, 0, 0, 0, 0, null, false, false);
+                hud.update(0, 0, 0, 0, 0, null, false, false);
                 return;
             }
             if (mc.theWorld != null && mc.thePlayer != null) {
                 if (!timerActive) {
                     target = null;
-                    hud.update(0, 0, 0, 0, 0, 0, null, false, false);
+                    hud.update(0, 0, 0, 0, 0, null, false, false);
                 } else {
                     double remainingMs = nanoTimerRemMs > 0 ? nanoTimerRemMs : calculateRemainingTime();
                     if (remainingMs <= 0.0) {
                         timerActive = false;
-                        hud.update(0, 0, 0, 0, 0, 0, null, false, false);
+                        hud.update(0, 0, 0, 0, 0, null, false, false);
                     } else {
                         measurePing();
                         long now = System.currentTimeMillis();
@@ -494,7 +493,7 @@ public class AutoHit {
                             }
                         }
 
-                        hud.update(remainingMs, fireWindowMs, targetRegistrationMs,
+                        hud.update(remainingMs, fireWindowMs,
                                 currentPingMs, p95PingMs, 0.0,
                                 target, attackExecuted, timerActive);
                     }
@@ -529,25 +528,9 @@ public class AutoHit {
                 if (secs == lastSeenSeconds) break;
 
                 if (lastSeenSeconds == -1 || secs > lastSeenSeconds) {
-                    if (attackExecuted && firedAtRemainingMs > 0.0) {
-                        double estimatedArrivalMs = firedAtRemainingMs - effectivePingMs();
-                        double error = estimatedArrivalMs - targetRegistrationMs;
-                        double correction = -error * CAL_RATE;
-                        calibrationOffsetMs += correction;
-                        clampCalibration();
-                        send("§6[TNTTag] §8Auto-cal: fired@§f"
-                                + String.format("%.3f", firedAtRemainingMs) + "ms "
-                                + "§8est.arr=§f" + String.format("%.3f", estimatedArrivalMs) + "ms "
-                                + "§8err=§f" + String.format("%+.3f", error) + "ms "
-                                + "§8→ off=§f" + String.format("%+.1f", calibrationOffsetMs) + "ms");
-                    }
-
                     roundNumber++;
                     send("§eTNT TAG §fRound §6#" + roundNumber
-                            + " §f- §6" + secs + "s "
-                            + "§8[target=" + String.format("%.3f", targetRegistrationMs)
-                            + "ms off=" + String.format("%+.1f", calibrationOffsetMs)
-                            + "ms fw=" + String.format("%.0f", calculateFireWindowMs()) + "ms]");
+                            + " §f- §6" + secs + "s");
                     partialRoundReset();
                 }
 
@@ -836,7 +819,6 @@ public class AutoHit {
 
         send("§c⚡ §fTagged §e" + taggedName
                 + " §8@ §f" + String.format("%.3f", remainingMs) + "ms "
-                + "§8(target=§f" + String.format("%.3f", targetRegistrationMs) + "ms§8)"
                 + " §8[hit §f" + hitCount + "§8/§f" + MAX_HITS + "§8]");
 
         if (hitCount >= MAX_HITS) {
@@ -855,7 +837,7 @@ public class AutoHit {
     private class SimpleHUD extends Gui {
 
         boolean visible;
-        double remMs, fireWindow, targetMs, avgPing, p95Ping, offset;
+        double remMs, fireWindow, avgPing, p95Ping, offset;
         EntityPlayer tgt;
         boolean attacked, active;
 
@@ -863,11 +845,10 @@ public class AutoHit {
             visible = true;
         }
 
-        void update(double r, double fw, double tm, double ap, double pp, double o,
+        void update(double r, double fw, double ap, double pp, double o,
                     EntityPlayer t, boolean at, boolean ac) {
             remMs    = r;
             fireWindow = fw;
-            targetMs = tm;
             avgPing  = ap;
             p95Ping  = pp;
             offset   = o;
@@ -890,7 +871,7 @@ public class AutoHit {
             }
 
             if (!active) {
-                draw(fr, "TNTTag  [I=settings]", cx, y, 0xAAAAAA);
+                draw(fr, "TNTTag  [I=settings]  waiting for 1s..", cx, y, 0xFFFFFF);
             } else {
 
                 long remNs = calculateRemainingNs();
