@@ -7,15 +7,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: 'Inter', sans-serif;
       background: #0e0b14;
       color: #d4cfe8;
       min-height: 100vh;
     }
-
-    /* glow blob behind hero */
     body::before {
       content: '';
       position: fixed;
@@ -25,7 +22,6 @@
       background: radial-gradient(ellipse, rgba(124,58,237,0.18) 0%, transparent 70%);
       pointer-events: none;
     }
-
     nav {
       display: flex; align-items: center; justify-content: space-between;
       padding: 1.1rem 2rem;
@@ -35,7 +31,6 @@
     nav a { color: #6b7280; font-size: 0.82rem; text-decoration: none; margin-left: 1.5rem; }
     nav a:hover { color: #d4cfe8; }
 
-    /* hero */
     .hero {
       text-align: center;
       padding: 5rem 1.5rem 3.5rem;
@@ -43,44 +38,26 @@
     }
     .hero h1 {
       font-size: clamp(2.4rem, 6vw, 3.8rem);
-      font-weight: 700;
-      line-height: 1.1;
-      color: #fff;
+      font-weight: 700; line-height: 1.1; color: #fff;
       margin-bottom: 1rem;
     }
-    .hero h1 em {
-      font-style: normal;
-      color: #a78bfa;
-    }
+    .hero h1 em { font-style: normal; color: #a78bfa; }
     .hero p {
-      color: #6b7280;
-      font-size: 0.95rem;
-      max-width: 380px;
-      margin: 0 auto 2.5rem;
-      line-height: 1.7;
+      color: #6b7280; font-size: 0.95rem;
+      max-width: 380px; margin: 0 auto 2.5rem; line-height: 1.7;
     }
-
     .dl-btn {
       display: inline-flex; align-items: center; gap: 0.5rem;
-      background: #7c3aed;
-      color: #fff; font-weight: 600; font-size: 0.95rem;
+      background: #7c3aed; color: #fff;
+      font-weight: 600; font-size: 0.95rem;
       padding: 0.8rem 2rem; border-radius: 9999px;
-      text-decoration: none; border: none; cursor: pointer;
+      text-decoration: none;
       transition: background 0.2s, transform 0.15s;
       box-shadow: 0 0 30px rgba(124,58,237,0.4);
     }
     .dl-btn:hover { background: #6d28d9; transform: translateY(-2px); }
     .dl-btn:active { transform: translateY(0); }
 
-    .count-line {
-      margin-top: 1.1rem;
-      font-size: 0.8rem; color: #4b5563;
-    }
-    .count-line span {
-      color: #a78bfa; font-weight: 600;
-    }
-
-    /* releases */
     .section {
       max-width: 560px; margin: 0 auto;
       padding: 0 1.5rem 4rem;
@@ -90,23 +67,18 @@
       letter-spacing: 0.1em; text-transform: uppercase;
       color: #4b5563; margin-bottom: 1rem;
     }
-
     .release {
       display: flex; align-items: center; justify-content: space-between;
       padding: 0.9rem 1.2rem;
       border-radius: 10px;
       border: 1px solid rgba(255,255,255,0.06);
       background: rgba(255,255,255,0.03);
-      margin-bottom: 0.6rem;
-      gap: 1rem;
+      margin-bottom: 0.6rem; gap: 1rem;
       transition: border-color 0.2s;
     }
     .release:hover { border-color: rgba(167,139,250,0.25); }
-
     .rel-left { display: flex; align-items: center; gap: 0.75rem; }
-    .rel-tag {
-      font-weight: 600; font-size: 0.9rem; color: #e5e7eb;
-    }
+    .rel-tag { font-weight: 600; font-size: 0.9rem; color: #e5e7eb; }
     .latest-badge {
       font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em;
       text-transform: uppercase; color: #a78bfa;
@@ -114,21 +86,16 @@
       padding: 0.15rem 0.4rem; border-radius: 4px;
     }
     .rel-date { font-size: 0.75rem; color: #4b5563; }
-
     .rel-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
-    .rel-count { font-size: 0.78rem; color: #4b5563; text-align: right; min-width: 60px; }
-    .rel-count strong { display: block; color: #9ca3af; font-size: 0.88rem; }
-
     .mini-btn {
       font-size: 0.78rem; color: #a78bfa;
       border: 1px solid rgba(167,139,250,0.3);
       background: transparent; padding: 0.35rem 0.75rem;
       border-radius: 6px; text-decoration: none;
-      white-space: nowrap; cursor: pointer;
+      white-space: nowrap;
       transition: background 0.2s, border-color 0.2s;
     }
     .mini-btn:hover { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.6); }
-
     footer {
       text-align: center; padding: 2rem;
       font-size: 0.75rem; color: #374151;
@@ -151,10 +118,7 @@
 <div class="hero">
   <h1>Last Hit.<br><em>Win the tag.</em></h1>
   <p>Free, open-source Forge mod for TNT Tag. Be the one tagging — not the one exploding.</p>
-  <a id="main-dl" class="dl-btn" href="#" target="_blank">
-    ↓ Download
-  </a>
-  <div class="count-line"><span id="total-count">—</span> total downloads</div>
+  <a id="main-dl" class="dl-btn" href="https://github.com/SavageMeatRider/LH-Source/releases/latest" target="_blank">↓ Download</a>
 </div>
 
 <div class="section">
@@ -176,24 +140,14 @@ async function init() {
     const releases = await res.json();
     if (!Array.isArray(releases) || !releases.length) return;
 
-    let total = 0;
-    releases.forEach(r => r.assets.forEach(a => total += a.download_count));
-    document.getElementById('total-count').textContent = total.toLocaleString();
-
-    // Main download button → latest jar
     const latest = releases[0];
     const latestJar = latest.assets.find(a => a.name.endsWith('.jar'));
-    const mainBtn = document.getElementById('main-dl');
-    mainBtn.href = latestJar ? latestJar.browser_download_url : latest.html_url;
-    mainBtn.textContent = `↓ Download ${latest.tag_name}`;
+    if (latestJar) document.getElementById('main-dl').href = latestJar.browser_download_url;
 
-    // Release list
     const container = document.getElementById('releases');
     releases.forEach((r, i) => {
-      const count = r.assets.reduce((s, a) => s + a.download_count, 0);
       const jar = r.assets.find(a => a.name.endsWith('.jar'));
       const date = new Date(r.published_at).toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
-
       const div = document.createElement('div');
       div.className = 'release';
       div.innerHTML = `
@@ -203,16 +157,12 @@ async function init() {
           <span class="rel-date">${date}</span>
         </div>
         <div class="rel-right">
-          <div class="rel-count"><strong>${count.toLocaleString()}</strong>downloads</div>
           ${jar ? `<a class="mini-btn" href="${jar.browser_download_url}">↓ .jar</a>` : ''}
           <a class="mini-btn" href="${r.html_url}" target="_blank">Notes</a>
         </div>`;
       container.appendChild(div);
     });
-
-  } catch(e) {
-    document.getElementById('total-count').textContent = '—';
-  }
+  } catch(e) {}
 }
 
 init();
