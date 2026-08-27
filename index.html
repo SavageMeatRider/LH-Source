@@ -3,132 +3,898 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LH Mod</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>LH Mod — Last Hit. Win the tag.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #08060f;
+      --bg2:       #0d0a18;
+      --purple:    #8b5cf6;
+      --purple-dim:#5b3fa6;
+      --magenta:   #d946ef;
+      --ember:     #ff6b35;
+      --white:     #f0ecff;
+      --muted:     #6b7280;
+      --dim:       #3d3554;
+      --card-bg:   rgba(255,255,255,0.03);
+      --card-bdr:  rgba(139,92,246,0.18);
+    }
+
+    html { scroll-behavior: smooth; }
+
     body {
       font-family: 'Inter', sans-serif;
-      background: #0e0b14;
-      color: #d4cfe8;
-      min-height: 100vh;
+      background: var(--bg);
+      color: var(--white);
+      overflow-x: hidden;
     }
-    body::before {
-      content: '';
-      position: fixed;
-      top: -200px; left: 50%;
+
+    /* ── CANVAS PARTICLES ── */
+    #particles {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(8,6,15,0.7);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(139,92,246,0.12);
+      transition: background 0.3s;
+    }
+    .nav-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700; font-size: 1.15rem;
+      color: var(--purple);
+      letter-spacing: 0.08em;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .nav-logo-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--magenta);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { box-shadow: 0 0 0 0 rgba(217,70,239,0.6); }
+      50%      { box-shadow: 0 0 0 6px rgba(217,70,239,0); }
+    }
+    .nav-links { display: flex; gap: 1.8rem; }
+    .nav-links a {
+      color: var(--muted); font-size: 0.83rem; text-decoration: none;
+      font-weight: 500; letter-spacing: 0.03em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-dl {
+      background: var(--purple);
+      color: #fff !important;
+      padding: 0.4rem 1.1rem;
+      border-radius: 6px;
+      font-size: 0.83rem !important;
+      font-weight: 600 !important;
+      transition: background 0.2s, transform 0.15s !important;
+    }
+    .nav-dl:hover { background: var(--magenta) !important; color: #fff; transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 7rem 1.5rem 5rem;
+    }
+    .hero-glow {
+      position: absolute;
+      top: -100px; left: 50%;
       transform: translateX(-50%);
-      width: 700px; height: 500px;
-      background: radial-gradient(ellipse, rgba(124,58,237,0.18) 0%, transparent 70%);
+      width: 800px; height: 600px;
+      background: radial-gradient(ellipse at center, rgba(139,92,246,0.22) 0%, rgba(217,70,239,0.08) 40%, transparent 70%);
       pointer-events: none;
     }
-    nav {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1.1rem 2rem;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    .logo { font-weight: 700; font-size: 1rem; color: #a78bfa; letter-spacing: 0.05em; }
-    nav a { color: #6b7280; font-size: 0.82rem; text-decoration: none; margin-left: 1.5rem; }
-    nav a:hover { color: #d4cfe8; }
 
-    .hero {
-      text-align: center;
-      padding: 5rem 1.5rem 3.5rem;
-      max-width: 600px; margin: 0 auto;
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(139,92,246,0.12);
+      border: 1px solid rgba(139,92,246,0.3);
+      padding: 0.35rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--purple);
+      margin-bottom: 2rem;
+      animation: fadein-up 0.6s ease both;
     }
-    .hero h1 {
-      font-size: clamp(2.4rem, 6vw, 3.8rem);
-      font-weight: 700; line-height: 1.1; color: #fff;
+    .hero-badge-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--magenta);
+      animation: blink 1.2s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .hero-h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 700; line-height: 1.0;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      margin-bottom: 0.4rem;
+      animation: fadein-up 0.6s 0.1s ease both;
+    }
+    .hero-h1 .line-purple {
+      color: var(--purple);
+      display: block;
+    }
+
+    /* glitch effect on tagline */
+    .glitch {
+      position: relative; display: inline-block;
+      color: var(--magenta);
+    }
+    .glitch::before, .glitch::after {
+      content: attr(data-text);
+      position: absolute; inset: 0;
+      color: var(--magenta);
+    }
+    .glitch::before {
+      animation: glitch-1 3.5s infinite;
+      clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+      transform: translate(-2px, -1px);
+      opacity: 0.8;
+      color: var(--ember);
+    }
+    .glitch::after {
+      animation: glitch-2 3.5s infinite;
+      clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+      transform: translate(2px, 1px);
+      opacity: 0.8;
+      color: #5eead4;
+    }
+    @keyframes glitch-1 {
+      0%,95%,100% { transform: translate(0,0); opacity: 0; }
+      96%          { transform: translate(-3px,-1px); opacity: 0.9; }
+      97%          { transform: translate(3px,1px); opacity: 0.9; }
+      98%          { transform: translate(-2px,2px); opacity: 0.9; }
+    }
+    @keyframes glitch-2 {
+      0%,95%,100% { transform: translate(0,0); opacity: 0; }
+      96%          { transform: translate(3px,1px); opacity: 0.9; }
+      97%          { transform: translate(-3px,-1px); opacity: 0.9; }
+      98%          { transform: translate(2px,-2px); opacity: 0.9; }
+    }
+
+    .hero-sub {
+      color: var(--muted); font-size: 1rem; line-height: 1.8;
+      max-width: 440px; margin: 1.8rem auto 0;
+      animation: fadein-up 0.6s 0.2s ease both;
+    }
+
+    /* ── COUNTDOWN WIDGET ── */
+    .countdown-wrap {
+      margin: 3rem auto 0;
+      animation: fadein-up 0.6s 0.3s ease both;
+    }
+    .countdown-label {
+      font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 0.7rem; font-weight: 600;
+    }
+    .countdown-box {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 0;
+      background: rgba(10,8,20,0.9);
+      border: 1px solid rgba(139,92,246,0.3);
+      border-radius: 12px;
+      padding: 0.8rem 1.6rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      box-shadow: 0 0 40px rgba(139,92,246,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+      position: relative; overflow: hidden;
+    }
+    .countdown-box::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(139,92,246,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    #cd-time { color: var(--white); }
+    #cd-ms   { color: var(--purple); font-size: 0.55em; align-self: flex-end; margin-bottom: 0.3em; }
+    .countdown-fire {
+      margin-top: 0.6rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem; color: var(--ember);
+      letter-spacing: 0.05em;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .countdown-fire.visible { opacity: 1; }
+    .countdown-sub {
+      margin-top: 0.5rem;
+      font-size: 0.72rem; color: var(--dim);
+      letter-spacing: 0.05em;
+    }
+
+    .hero-cta {
+      margin-top: 2.8rem;
+      display: flex; gap: 1rem; align-items: center; justify-content: center;
+      flex-wrap: wrap;
+      animation: fadein-up 0.6s 0.4s ease both;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--purple);
+      color: #fff; font-weight: 700; font-size: 0.95rem;
+      padding: 0.85rem 2.2rem; border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 0 0 0 rgba(139,92,246,0.5);
+      animation: cta-pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes cta-pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(139,92,246,0.5); }
+      50%      { box-shadow: 0 0 0 14px rgba(139,92,246,0); }
+    }
+    .btn-primary:hover {
+      background: var(--magenta); transform: translateY(-2px);
+      animation: none;
+      box-shadow: 0 8px 30px rgba(217,70,239,0.4);
+    }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: var(--muted); font-size: 0.88rem; font-weight: 500;
+      text-decoration: none; padding: 0.85rem 1.4rem;
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--white); border-color: rgba(255,255,255,0.2); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      position: relative; z-index: 1;
+      height: 1px; margin: 0 auto;
+      max-width: 900px;
+      background: linear-gradient(90deg, transparent, rgba(139,92,246,0.4), transparent);
+    }
+
+    /* ── SECTION BASE ── */
+    section {
+      position: relative; z-index: 1;
+      padding: 7rem 1.5rem;
+    }
+    .section-inner {
+      max-width: 1040px; margin: 0 auto;
+    }
+    .section-eyebrow {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--purple);
       margin-bottom: 1rem;
     }
-    .hero h1 em { font-style: normal; color: #a78bfa; }
-    .hero p {
-      color: #6b7280; font-size: 0.95rem;
-      max-width: 380px; margin: 0 auto 2.5rem; line-height: 1.7;
+    .section-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700; line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+    .section-lead {
+      color: var(--muted); font-size: 1rem; line-height: 1.75;
+      max-width: 520px;
     }
 
-    /* label above button */
-    .dl-label {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      margin-bottom: 0.75rem;
+    /* ── HOW IT WORKS ── */
+    #how { background: var(--bg2); }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2px;
+      margin-top: 4rem;
+      border: 1px solid rgba(139,92,246,0.12);
+      border-radius: 16px;
+      overflow: hidden;
     }
-    .dl-label-line {
-      width: 28px; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(167,139,250,0.4));
+    .step {
+      background: var(--card-bg);
+      padding: 2.5rem 2rem;
+      position: relative;
+      transition: background 0.25s;
     }
-    .dl-label-line.right {
-      background: linear-gradient(90deg, rgba(167,139,250,0.4), transparent);
+    .step:hover { background: rgba(139,92,246,0.07); }
+    .step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem; font-weight: 600;
+      letter-spacing: 0.15em; color: var(--purple-dim);
+      margin-bottom: 1.2rem;
     }
-    .dl-label-text {
-      font-size: 0.7rem; font-weight: 600;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      color: #7c5fc7;
+    .step-icon {
+      font-size: 2.2rem; margin-bottom: 1rem; display: block;
+      line-height: 1;
     }
-    .dl-label-text span {
-      color: #a78bfa;
+    .step-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem; font-weight: 600;
+      color: var(--white); margin-bottom: 0.6rem;
     }
+    .step-desc {
+      color: var(--muted); font-size: 0.88rem; line-height: 1.7;
+    }
+    .step-accent {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--purple), var(--magenta));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.35s ease;
+    }
+    .step:hover .step-accent { transform: scaleX(1); }
 
-    .dl-btn {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      background: #7c3aed; color: #fff;
-      font-weight: 600; font-size: 0.95rem;
-      padding: 0.8rem 2rem; border-radius: 9999px;
-      text-decoration: none;
-      transition: background 0.2s, transform 0.15s;
-      box-shadow: 0 0 30px rgba(124,58,237,0.4);
+    /* ── FEATURES ── */
+    #features { background: var(--bg); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1.5rem;
+      margin-top: 4rem;
     }
-    .dl-btn:hover { background: #6d28d9; transform: translateY(-2px); }
-    .dl-btn:active { transform: translateY(0); }
+    .feat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-bdr);
+      border-radius: 14px;
+      padding: 2rem;
+      position: relative; overflow: hidden;
+      transition: border-color 0.25s, transform 0.2s;
+    }
+    .feat-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(139,92,246,0.5), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .feat-card:hover { border-color: rgba(139,92,246,0.45); transform: translateY(-3px); }
+    .feat-card:hover::before { opacity: 1; }
 
+    .feat-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: rgba(139,92,246,0.12);
+      border: 1px solid rgba(139,92,246,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; margin-bottom: 1.2rem;
+    }
+    .feat-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem; font-weight: 600; color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+    .feat-desc {
+      color: var(--muted); font-size: 0.86rem; line-height: 1.7;
+    }
+    .feat-tag {
+      display: inline-block; margin-top: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em;
+      color: var(--purple); background: rgba(139,92,246,0.1);
+      border: 1px solid rgba(139,92,246,0.2);
+      padding: 0.2rem 0.6rem; border-radius: 4px;
+    }
+    .feat-tag.ember { color: var(--ember); background: rgba(255,107,53,0.08); border-color: rgba(255,107,53,0.2); }
+    .feat-tag.magenta { color: var(--magenta); background: rgba(217,70,239,0.08); border-color: rgba(217,70,239,0.2); }
+
+    /* ── STATS BAR ── */
+    #stats {
+      background: var(--bg2);
+      padding: 5rem 1.5rem;
+    }
+    .stats-grid {
+      max-width: 900px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 2rem; text-align: center;
+    }
+    .stat-val {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 2.8rem; font-weight: 700;
+      color: var(--white); line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .stat-val em { font-style: normal; color: var(--purple); }
+    .stat-lbl { color: var(--muted); font-size: 0.82rem; font-weight: 500; }
+
+    /* ── TERMINAL BLOCK ── */
+    #terminal-section { background: var(--bg); }
+    .terminal {
+      background: #0a0814;
+      border: 1px solid rgba(139,92,246,0.2);
+      border-radius: 14px; overflow: hidden;
+      max-width: 680px; margin: 3rem auto 0;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+    .terminal-bar {
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 0.75rem 1rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .t-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .t-dot.r { background: #ff5f56; }
+    .t-dot.y { background: #ffbd2e; }
+    .t-dot.g { background: #27c93f; }
+    .t-title { margin-left: auto; font-size: 0.72rem; color: var(--dim); font-family: 'JetBrains Mono', monospace; }
+    .terminal-body {
+      padding: 1.6rem 1.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem; line-height: 2;
+    }
+    .t-line { display: flex; gap: 0.8rem; }
+    .t-prompt { color: var(--purple-dim); user-select: none; }
+    .t-green { color: #4ade80; }
+    .t-purple { color: var(--purple); }
+    .t-orange { color: var(--ember); }
+    .t-magenta { color: var(--magenta); }
+    .t-dim { color: var(--dim); }
+    .t-white { color: var(--white); }
+    .t-cursor {
+      display: inline-block; width: 8px; height: 1.1em;
+      background: var(--purple); vertical-align: middle;
+      animation: blink-cursor 1s step-end infinite;
+    }
+    @keyframes blink-cursor { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ── DOWNLOAD CTA ── */
+    #download {
+      background: var(--bg);
+      text-align: center; padding: 9rem 1.5rem;
+    }
+    .dl-glow {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 100%, rgba(139,92,246,0.18), transparent 60%);
+      pointer-events: none;
+    }
+    #download { position: relative; overflow: hidden; }
+    .dl-version {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem; color: var(--dim);
+      margin-bottom: 1rem; letter-spacing: 0.1em;
+    }
+    .dl-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700; line-height: 1.1;
+      color: var(--white); margin-bottom: 1rem;
+    }
+    .dl-sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 3rem; }
+    .dl-buttons {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    }
+    .dl-note {
+      margin-top: 1.5rem;
+      font-size: 0.75rem; color: var(--dim);
+    }
+    .dl-note a { color: var(--dim); text-decoration: underline; }
+    .dl-note a:hover { color: var(--muted); }
+
+    /* ── FOOTER ── */
     footer {
-      text-align: center; padding: 2rem;
-      font-size: 0.75rem; color: #374151;
-      border-top: 1px solid rgba(255,255,255,0.04);
-      position: fixed; bottom: 0; width: 100%;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 2rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
     }
-    footer a { color: #4b5563; text-decoration: none; }
-    footer a:hover { color: #9ca3af; }
+    .footer-logo { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.9rem; color: var(--purple-dim); }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { color: var(--dim); font-size: 0.8rem; text-decoration: none; }
+    .footer-links a:hover { color: var(--muted); }
+    .footer-copy { color: var(--dim); font-size: 0.75rem; }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+
+    @keyframes fadein-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      nav { padding: 0.9rem 1.2rem; }
+      .nav-links a:not(.nav-dl) { display: none; }
+      .hero-cta { flex-direction: column; align-items: stretch; }
+      .btn-primary, .btn-ghost { text-align: center; justify-content: center; }
+      footer { flex-direction: column; text-align: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
   </style>
 </head>
 <body>
 
+<canvas id="particles"></canvas>
+
+<!-- NAV -->
 <nav>
-  <div class="logo">LH</div>
-  <div>
+  <div class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    LH
+  </div>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#features">Features</a>
     <a href="https://github.com/SavageMeatRider/LH-Source" target="_blank">GitHub</a>
-    <a href="https://github.com/SavageMeatRider/LH-Source/releases" target="_blank">Releases</a>
+    <a href="https://github.com/SavageMeatRider/LH-Source/releases" target="_blank" class="nav-dl">↓ Download</a>
   </div>
 </nav>
 
+<!-- HERO -->
 <div class="hero">
-  <h1>Last Hit.<br><em>Win the tag.</em></h1>
-  <p>Free, open-source Forge mod for TNT Tag. Be the one tagging — not the one exploding.</p>
+  <div class="hero-glow"></div>
 
-  <div class="dl-label">
-    <div class="dl-label-line"></div>
-    <div class="dl-label-text">LH <span>·</span> Source <span>·</span> Latest</div>
-    <div class="dl-label-line right"></div>
+  <div class="hero-badge">
+    <div class="hero-badge-dot"></div>
+    Free &amp; Open Source · Forge 1.8.9
   </div>
-  <br>
-  <a id="main-dl" class="dl-btn" href="https://github.com/SavageMeatRider/LH-Source/releases/latest" target="_blank">↓ Download</a>
+
+  <h1 class="hero-h1">
+    Last Hit.
+    <span class="line-purple"><span class="glitch" data-text="Win the tag.">Win the tag.</span></span>
+  </h1>
+
+  <p class="hero-sub">
+    Precision-timed auto-attack for TNT Tag. Tracks the countdown to the nanosecond,
+    measures your ping in real-time, and fires at exactly the right millisecond.
+    You tag. They explode.
+  </p>
+
+  <!-- Live countdown demo -->
+  <div class="countdown-wrap">
+    <div class="countdown-label">live demo — tag timer</div>
+    <div class="countdown-box">
+      <span id="cd-time">0.847</span><span id="cd-ms">s</span>
+    </div>
+    <div class="countdown-fire" id="cd-fire">⚡ FIRE — tagged PlayerXX @ 0.012ms</div>
+    <div class="countdown-sub">simulated · resets every round</div>
+  </div>
+
+  <div class="hero-cta">
+    <a id="main-dl" class="btn-primary" href="https://github.com/SavageMeatRider/LH-Source/releases/latest" target="_blank">
+      ↓ Download Latest
+    </a>
+    <a class="btn-ghost" href="https://github.com/SavageMeatRider/LH-Source" target="_blank">
+      ★ View Source
+    </a>
+  </div>
 </div>
 
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">How it works</p>
+    <h2 class="section-h2 reveal">Engineered for the<br>last second.</h2>
+    <p class="section-lead reveal">Three systems working in sync to make sure you're never the one holding the tag.</p>
+
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-num">01 / SCAN</div>
+        <span class="step-icon">📡</span>
+        <div class="step-title">Scoreboard Sync</div>
+        <div class="step-desc">Reads the TNT Tag countdown from the scoreboard every millisecond. The moment a round starts, the timer is locked in with nanosecond precision.</div>
+        <div class="step-accent"></div>
+      </div>
+      <div class="step">
+        <div class="step-num">02 / MEASURE</div>
+        <span class="step-icon">🔬</span>
+        <div class="step-title">Live Ping Sampling</div>
+        <div class="step-desc">Samples your network latency continuously using a rolling 30-sample window and P95 outlier detection. Your fire window adapts to your actual connection — not a guess.</div>
+        <div class="step-accent"></div>
+      </div>
+      <div class="step">
+        <div class="step-num">03 / FIRE</div>
+        <span class="step-icon">⚡</span>
+        <div class="step-title">Nanosecond Fire Thread</div>
+        <div class="step-desc">A dedicated high-priority thread checks every nanosecond. When the timer hits the calculated fire window, it attacks instantly — far faster than any human reaction can.</div>
+        <div class="step-accent"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">Features</p>
+    <h2 class="section-h2 reveal">Every edge.<br>No compromises.</h2>
+    <p class="section-lead reveal">Built for players who understand that milliseconds are the difference between tagging and exploding.</p>
+
+    <div class="features-grid">
+      <div class="feat-card reveal">
+        <div class="feat-icon">⏱️</div>
+        <div class="feat-title">Sub-millisecond Timer</div>
+        <div class="feat-desc">Smooth HUD countdown updating every 1ms via dedicated thread. No 50ms Minecraft tick lag — you see exactly where you are.</div>
+        <span class="feat-tag">1ms precision</span>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">📶</div>
+        <div class="feat-title">Adaptive Ping Engine</div>
+        <div class="feat-desc">Real-time P95 latency tracking with configurable ping multiplier (1.000x – 1.100x in 3-decimal steps) so the fire window fits your connection perfectly.</div>
+        <span class="feat-tag magenta">x.xxx precision</span>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">🎯</div>
+        <div class="feat-title">Aim Lock</div>
+        <div class="feat-desc">Automatically locks your view onto the nearest player when the timer enters its final second — so the tag lands even if you're looking the wrong way.</div>
+        <span class="feat-tag ember">auto-target</span>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">🧵</div>
+        <div class="feat-title">Multi-thread Architecture</div>
+        <div class="feat-desc">Separate threads for fire detection, timer sync, aim lock, and ping — none of them block each other or your game's render loop.</div>
+        <span class="feat-tag">non-blocking</span>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">🕹️</div>
+        <div class="feat-title">In-game Settings GUI</div>
+        <div class="feat-desc">Full settings panel accessible with I key. Toggle fire check, smooth timer, adjust ping multiplier by typing, remap toggle key — all without leaving the game.</div>
+        <span class="feat-tag magenta">zero restart</span>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">🔓</div>
+        <div class="feat-title">Fully Open Source</div>
+        <div class="feat-desc">Every line of code is public. No obfuscated jar, no mystery. Fork it, modify it, learn from it. Built on Forge 1.8.9.</div>
+        <span class="feat-tag ember">MIT-style</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="stats-grid">
+    <div class="reveal">
+      <div class="stat-val"><em>1</em>ns</div>
+      <div class="stat-lbl">fire thread resolution</div>
+    </div>
+    <div class="reveal">
+      <div class="stat-val"><em>30</em>×</div>
+      <div class="stat-lbl">ping samples rolling window</div>
+    </div>
+    <div class="reveal">
+      <div class="stat-val"><em>3</em></div>
+      <div class="stat-lbl">decimal places of multiplier control</div>
+    </div>
+    <div class="reveal">
+      <div class="stat-val"><em>0</em></div>
+      <div class="stat-lbl">dollars, ever</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TERMINAL -->
+<section id="terminal-section">
+  <div class="section-inner" style="text-align:center;">
+    <p class="section-eyebrow reveal">In-game output</p>
+    <h2 class="section-h2 reveal">Transparent by design.</h2>
+    <p class="section-lead reveal" style="margin: 0 auto;">Every action is logged in chat so you know exactly what fired, when, and why.</p>
+
+    <div class="terminal reveal">
+      <div class="terminal-bar">
+        <div class="t-dot r"></div>
+        <div class="t-dot y"></div>
+        <div class="t-dot g"></div>
+        <div class="t-title">Minecraft Chat — TNTTag</div>
+      </div>
+      <div class="terminal-body" id="terminal-body">
+        <div class="t-line"><span class="t-dim">&nbsp;</span><span class="t-dim">Connecting to mc.hypixel.net ...</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DOWNLOAD CTA -->
+<section id="download">
+  <div class="dl-glow"></div>
+  <p class="dl-version reveal" id="dl-version">LH · Source · Loading release...</p>
+  <h2 class="dl-h2 reveal">Stop being it.<br>Start tagging.</h2>
+  <p class="dl-sub reveal">Free. Open source. No account. One click.</p>
+  <div class="dl-buttons reveal">
+    <a id="dl-main" class="btn-primary" href="https://github.com/SavageMeatRider/LH-Source/releases/latest" target="_blank" style="font-size:1.05rem; padding: 1rem 2.6rem;">
+      ↓ Download .jar
+    </a>
+    <a class="btn-ghost" href="https://github.com/SavageMeatRider/LH-Source" target="_blank">
+      View on GitHub →
+    </a>
+  </div>
+  <p class="dl-note reveal">Requires <a href="https://files.minecraftforge.net/net/minecraftforge/forge/index_1.8.9.html" target="_blank">Minecraft Forge 1.8.9</a> · Drop into your mods folder · Done.</p>
+</section>
+
+<!-- FOOTER -->
 <footer>
-  By <a href="https://github.com/SavageMeatRider" target="_blank">SavageMeatRider</a> ·
-  <a href="https://github.com/SavageMeatRider/LH-Source" target="_blank">Open Source</a>
+  <div class="footer-logo">LH</div>
+  <div class="footer-links">
+    <a href="https://github.com/SavageMeatRider/LH-Source" target="_blank">GitHub</a>
+    <a href="https://github.com/SavageMeatRider/LH-Source/releases" target="_blank">Releases</a>
+    <a href="https://github.com/SavageMeatRider/LH-Source/issues" target="_blank">Issues</a>
+  </div>
+  <div class="footer-copy">By <a href="https://github.com/SavageMeatRider" target="_blank" style="color:var(--dim);text-decoration:none">SavageMeatRider</a></div>
 </footer>
 
 <script>
-const OWNER = 'SavageMeatRider', REPO = 'LH-Source';
-async function init() {
+/* ═══════════════════════════════════════
+   PARTICLES
+═══════════════════════════════════════ */
+(function() {
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const COLORS = ['rgba(139,92,246,', 'rgba(217,70,239,', 'rgba(255,107,53,'];
+
+  for (let i = 0; i < 80; i++) {
+    particles.push({
+      x: Math.random() * 1920,
+      y: Math.random() * 1080,
+      r: Math.random() * 1.5 + 0.3,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: -Math.random() * 0.4 - 0.1,
+      col: COLORS[Math.floor(Math.random() * COLORS.length)],
+      alpha: Math.random() * 0.5 + 0.1,
+      life: Math.random()
+    });
+  }
+
+  function tick() {
+    ctx.clearRect(0, 0, W, H);
+    for (const p of particles) {
+      p.x += p.vx; p.y += p.vy; p.life += 0.003;
+      if (p.y < -10 || p.life > 1) {
+        p.x = Math.random() * W;
+        p.y = H + 10;
+        p.life = 0;
+      }
+      const a = p.alpha * Math.sin(p.life * Math.PI);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.col + a + ')';
+      ctx.fill();
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+/* ═══════════════════════════════════════
+   COUNTDOWN DEMO
+═══════════════════════════════════════ */
+(function() {
+  const cdTime = document.getElementById('cd-time');
+  const cdFire = document.getElementById('cd-fire');
+  const PING   = 62;
+  const MULT   = 1.042;
+  const FW     = (PING * MULT) / 1000;
+  const NAMES  = ['Dragonfly_', 'xXl3gitXx', 'CreeperKing', 'TNTpro99', 'Blazer2k'];
+
+  let t = 1.0;
+  let fired = false;
+  let firingAt = null;
+
+  function reset() {
+    t = 1.0; fired = false; firingAt = null;
+    cdFire.classList.remove('visible');
+    const name = NAMES[Math.floor(Math.random() * NAMES.length)];
+    firingAt = name;
+  }
+
+  function step() {
+    t -= 0.001;
+    if (t < 0) { setTimeout(reset, 1800); return; }
+
+    cdTime.textContent = t.toFixed(3);
+
+    // color ramp
+    const ratio = t;
+    if (ratio < 0.15)      cdTime.style.color = '#ff6b35';
+    else if (ratio < 0.35) cdTime.style.color = '#d946ef';
+    else                   cdTime.style.color = 'var(--white)';
+
+    if (!fired && t <= FW) {
+      fired = true;
+      cdFire.textContent = `⚡ FIRE — tagged ${firingAt} @ ${(t * 1000).toFixed(3)}ms`;
+      cdFire.classList.add('visible');
+    }
+
+    setTimeout(step, 12);
+  }
+
+  reset();
+  step();
+})();
+
+/* ═══════════════════════════════════════
+   TERMINAL TYPEWRITER
+═══════════════════════════════════════ */
+(function() {
+  const body = document.getElementById('terminal-body');
+
+  const lines = [
+    { text: '[TNTTag] Module enabled.',                        cls: 't-green',   delay: 600 },
+    { text: 'TNT TAG Round #1 - 60s',                         cls: 't-white',   delay: 1400 },
+    { text: '[TNTTag] New round.',                             cls: 't-dim',     delay: 2000 },
+    { text: '[TNTTag] Ping: 62ms  P95: 67ms',                 cls: 't-purple',  delay: 2600 },
+    { text: '[TNTTag] Fire check on. Thread: MAX_PRIORITY',   cls: 't-dim',     delay: 3000 },
+    { text: 'TNT TAG Round #1 - 1s',                          cls: 't-orange',  delay: 5000 },
+    { text: '⚡ Tagged xXl3gitXx @ 0.017ms  [hit 1/3]',      cls: 't-magenta', delay: 5400 },
+    { text: '[TNTTag] Ping multiplier: 1.042x (→ 65ms)',      cls: 't-purple',  delay: 6200 },
+    { text: 'TNT TAG Round #2 - 60s',                         cls: 't-white',   delay: 7400 },
+    { text: '⚡ Tagged Dragonfly_ @ 0.003ms  [hit 2/3]',     cls: 't-magenta', delay: 12800 },
+    { text: '',                                                cls: '',          delay: 13400, cursor: true },
+  ];
+
+  lines.forEach(({ text, cls, delay, cursor }) => {
+    setTimeout(() => {
+      const line = document.createElement('div');
+      line.className = 't-line';
+      if (text) {
+        line.innerHTML = `<span class="t-prompt">§</span><span class="${cls}">${text}</span>`;
+      } else {
+        line.innerHTML = `<span class="t-prompt">§</span><span class="t-cursor"></span>`;
+      }
+      body.appendChild(line);
+      body.scrollTop = body.scrollHeight;
+    }, delay);
+  });
+})();
+
+/* ═══════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════ */
+(function() {
+  const els = document.querySelectorAll('.reveal');
+  const io  = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  els.forEach(el => io.observe(el));
+})();
+
+/* ═══════════════════════════════════════
+   GITHUB RELEASE
+═══════════════════════════════════════ */
+(async function() {
+  const OWNER = 'SavageMeatRider', REPO = 'LH-Source';
   try {
-    const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/releases/latest`);
-    const release = await res.json();
-    const jar = release.assets && release.assets.find(a => a.name.endsWith('.jar'));
-    if (jar) document.getElementById('main-dl').href = jar.browser_download_url;
+    const res  = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/releases/latest`);
+    const rel  = await res.json();
+    const jar  = rel.assets && rel.assets.find(a => a.name.endsWith('.jar'));
+    if (jar) {
+      document.getElementById('main-dl').href = jar.browser_download_url;
+      document.getElementById('dl-main').href = jar.browser_download_url;
+    }
+    if (rel.tag_name) {
+      document.getElementById('dl-version').textContent = `LH · Source · ${rel.tag_name}`;
+    }
   } catch(e) {}
-}
-init();
+})();
 </script>
 </body>
 </html>
